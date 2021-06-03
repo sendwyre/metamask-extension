@@ -12,11 +12,12 @@ import {
  * @param {Object} opts - Options required to determine the correct url
  * @param {string} opts.chainId - The chainId for which to return a url
  * @param {string} opts.address - The address the bought ETH should be sent to.  Only relevant if chainId === '0x1'.
+ * @param {string} esidToken - The random generated secure token.
  * @returns {string|undefined} The url at which the user can access ETH, while in the given chain. If the passed
  * chainId does not match any of the specified cases, or if no chainId is given, returns undefined.
  *
  */
-export default function getBuyEthUrl({ chainId, address, service }) {
+export default function getBuyEthUrl({ chainId, address, service }, esidToken) {
   // default service by network if not specified
   if (!service) {
     // eslint-disable-next-line no-param-reassign
@@ -25,7 +26,7 @@ export default function getBuyEthUrl({ chainId, address, service }) {
 
   switch (service) {
     case 'wyre':
-      return `https://pay.sendwyre.com/purchase?dest=ethereum:${address}&destCurrency=ETH&accountId=AC-7AG3W4XH4N2&paymentMethod=debit-card`;
+      return `https://pay.sendwyre.com/purchase?dest=ethereum:${address}&destCurrency=ETH&accountId=AC-7AG3W4XH4N2&paymentMethod=debit-card&ESID=${esidToken}`;
     case 'metamask-faucet':
       return 'https://faucet.metamask.io/';
     case 'rinkeby-faucet':

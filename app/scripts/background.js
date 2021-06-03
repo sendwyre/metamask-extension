@@ -285,6 +285,11 @@ function setupController(initState, initLangCode) {
   extension.runtime.onConnect.addListener(connectRemote);
   extension.runtime.onConnectExternal.addListener(connectExternal);
 
+  //
+  // get message from other contexts
+  //
+  extension.runtime.onMessageExternal.addListener(getMessage);
+
   const metamaskInternalProcessHash = {
     [ENVIRONMENT_TYPE_POPUP]: true,
     [ENVIRONMENT_TYPE_NOTIFICATION]: true,
@@ -374,6 +379,24 @@ function setupController(initState, initLangCode) {
   function connectExternal(remotePort) {
     const portStream = new PortStream(remotePort);
     controller.setupUntrustedCommunication(portStream, remotePort.sender);
+  }
+
+  /**
+   * A runtime.MessageSender object, as provided by the browser:
+   * @see https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/MessageSender
+   * @typedef MessageSender
+   * @type Object
+   */
+
+  /**
+   * Get message from external web pages or extensions
+   * This method identifies trusted (MetaMask) interfaces, and connects them differently from untrusted (web pages).
+   * @param {Object} request - The message provided by a web page or extension.
+   * @param {MessageSender} sender - The object giving details about the message sender.
+   * @param {Function} sendResponse - The function which it can use to send a response back to the sender.
+   */
+  function getMessage(request, sender, sendResponse) {
+    controller.getMessageExternal(request, sender, sendResponse);
   }
 
   //

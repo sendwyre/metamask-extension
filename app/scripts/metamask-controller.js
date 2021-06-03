@@ -739,6 +739,10 @@ export default class MetamaskController extends EventEmitter {
         this.appStateController.setSwapsWelcomeMessageHasBeenShown,
         this.appStateController,
       ),
+      setESIDToken: nodeify(
+        this.appStateController.setESIDToken,
+        this.appStateController,
+      ),
 
       // EnsController
       tryReverseResolveAddress: nodeify(
@@ -2461,6 +2465,39 @@ export default class MetamaskController extends EventEmitter {
       if (!duplicate) {
         this.addressBookController.delete(oldChainId, address);
       }
+    }
+  }
+
+  /**
+   * A runtime.MessageSender object, as provided by the browser:
+   * @see https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/MessageSender
+   * @typedef MessageSender
+   * @type Object
+   */
+
+  /**
+   * Connects a Port to the MetaMask controller via a multiplexed duplex stream.
+   * This method identifies trusted (MetaMask) interfaces, and connects them differently from untrusted (web pages).
+   * @param {Object} request - The message/data provided by a web page or extension.
+   * @param {MessageSender} sender - The object giving details about the message sender.
+   * @param {Function} sendResponse - The function which it can use to send a response back to the sender.
+   */
+  getMessageExternal(request, sender, sendResponse) {
+    const { usePhishDetect } = this.preferencesController.store.getState();
+    const { hostname } = new URL(sender.url);
+    // Check if new connection is blocked if phishing detection is on
+    if (usePhishDetect && this.phishingController.test(hostname)) {
+      log.debug('MetaMask - sending phishing warning for', hostname);
+      // TODO: sendPhishingWarning ?
+      return;
+    }
+
+    if (sender.origin === 'http://localhost:3000' && request.wyreToken) {
+      const savedESIDToken = this.appStateController.store.getState().ESIDToken;
+      sendResponse({
+        wyreToken: request.wyreToken,
+        ESID: savedESIDToken,
+      });
     }
   }
 

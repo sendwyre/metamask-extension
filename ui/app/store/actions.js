@@ -23,6 +23,7 @@ import {
 import {
   getPermittedAccountsForCurrentTab,
   getSelectedAddress,
+  getESIDToken,
 } from '../selectors';
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
 import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask';
@@ -1978,8 +1979,12 @@ export function showSendTokenPage() {
 }
 
 export function buyEth(opts) {
-  return (dispatch) => {
-    const url = getBuyEthUrl(opts);
+  return async (dispatch, getState) => {
+    await promisifiedBackground.setESIDToken();
+    const state = getState();
+    const ESIDToken = getESIDToken(state);
+    const url = getBuyEthUrl(opts, ESIDToken);
+
     global.platform.openTab({ url });
     dispatch({
       type: actionConstants.BUY_ETH,

@@ -24,6 +24,7 @@ export default class AppStateController extends EventEmitter {
       connectedStatusPopoverHasBeenShown: true,
       swapsWelcomeMessageHasBeenShown: false,
       defaultHomeActiveTabName: null,
+      ESIDToken: null,
       ...initState,
     });
     this.timer = null;
@@ -118,6 +119,15 @@ export default class AppStateController extends EventEmitter {
   setSwapsWelcomeMessageHasBeenShown() {
     this.store.updateState({
       swapsWelcomeMessageHasBeenShown: true,
+    });
+  }
+
+  /**
+   * Record the ESID token
+   */
+  setESIDToken() {
+    this.store.updateState({
+      ESIDToken: 'SOME_ESID_TOKEN',
     });
   }
 
