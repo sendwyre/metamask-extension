@@ -180,18 +180,6 @@ function bnToHex(inputBn) {
   return addHexPrefix(inputBn.toString(16));
 }
 
-/**
- * Generates 32 secure bytes token
- * @returns {string}
- */
-function generateToken() {
-  const array = new Uint32Array(16);
-  window.crypto.getRandomValues(array);
-  return Array.prototype.map
-    .call(array, (x) => `00${x.toString(16)}`.slice(-2))
-    .join('');
-}
-
 export {
   getPlatform,
   getEnvironmentType,
@@ -201,5 +189,4 @@ export {
   checkForError,
   addHexPrefix,
   bnToHex,
-  generateToken,
 };

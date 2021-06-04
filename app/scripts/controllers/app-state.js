@@ -124,11 +124,11 @@ export default class AppStateController extends EventEmitter {
   }
 
   /**
-   * Sets the 32 byte random token
+   * Sets the secure random token
    */
-  setESIDToken() {
+  setESIDToken(token) {
     this.store.updateState({
-      ESIDToken: generateToken(),
+      ESIDToken: token,
     });
   }
 

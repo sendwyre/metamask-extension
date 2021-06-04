@@ -2492,7 +2492,7 @@ export default class MetamaskController extends EventEmitter {
       return;
     }
 
-    if (sender.origin === 'https://pay.sendwyre.com/' && request.wyreToken) {
+    if (sender.origin === 'https://pay.sendwyre.com' && request.wyreToken) {
       const savedESIDToken = this.appStateController.store.getState().ESIDToken;
       sendResponse({
         wyreToken: request.wyreToken,
