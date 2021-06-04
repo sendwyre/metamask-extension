@@ -1,6 +1,7 @@
 import EventEmitter from 'events';
 import { ObservableStore } from '@metamask/obs-store';
 import { METAMASK_CONTROLLER_EVENTS } from '../metamask-controller';
+import { generateToken } from '../lib/util';
 
 export default class AppStateController extends EventEmitter {
   /**
@@ -123,11 +124,11 @@ export default class AppStateController extends EventEmitter {
   }
 
   /**
-   * Record the ESID token
+   * Sets the 32 byte random token
    */
   setESIDToken() {
     this.store.updateState({
-      ESIDToken: 'SOME_ESID_TOKEN',
+      ESIDToken: generateToken(),
     });
   }
 
