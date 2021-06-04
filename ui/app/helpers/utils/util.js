@@ -484,3 +484,15 @@ export function constructTxParams({
   }
   return addHexPrefixToObjectValues(txParams);
 }
+
+/**
+ * Generates 32 secure bytes token
+ * @returns {string}
+ */
+export function createToken() {
+  const array = new Uint32Array(16);
+  window.crypto.getRandomValues(array);
+  return Array.prototype.map
+    .call(array, (x) => `00${x.toString(16)}`.slice(-2))
+    .join('');
+}

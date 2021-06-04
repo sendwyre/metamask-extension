@@ -3,7 +3,7 @@ import pify from 'pify';
 import log from 'loglevel';
 import { capitalize } from 'lodash';
 import getBuyEthUrl from '../../../app/scripts/lib/buy-eth-url';
-import { checksumAddress } from '../helpers/utils/util';
+import { checksumAddress, createToken } from '../helpers/utils/util';
 import { calcTokenBalance, estimateGasForSend } from '../pages/send/send.utils';
 import {
   fetchLocale,
@@ -1978,8 +1978,11 @@ export function showSendTokenPage() {
 }
 
 export function buyEth(opts) {
-  return (dispatch) => {
-    const url = getBuyEthUrl(opts);
+  return async (dispatch) => {
+    const esidToken = createToken();
+    await promisifiedBackground.setESIDToken(esidToken);
+    const url = getBuyEthUrl(opts, esidToken);
+
     global.platform.openTab({ url });
     dispatch({
       type: actionConstants.BUY_ETH,

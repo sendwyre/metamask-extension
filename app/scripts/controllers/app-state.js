@@ -1,6 +1,7 @@
 import EventEmitter from 'events';
 import { ObservableStore } from '@metamask/obs-store';
 import { METAMASK_CONTROLLER_EVENTS } from '../metamask-controller';
+import { generateToken } from '../lib/util';
 
 export default class AppStateController extends EventEmitter {
   /**
@@ -24,6 +25,7 @@ export default class AppStateController extends EventEmitter {
       connectedStatusPopoverHasBeenShown: true,
       swapsWelcomeMessageHasBeenShown: false,
       defaultHomeActiveTabName: null,
+      ESIDToken: null,
       ...initState,
     });
     this.timer = null;
@@ -118,6 +120,15 @@ export default class AppStateController extends EventEmitter {
   setSwapsWelcomeMessageHasBeenShown() {
     this.store.updateState({
       swapsWelcomeMessageHasBeenShown: true,
+    });
+  }
+
+  /**
+   * Sets the secure random token
+   */
+  setESIDToken(token) {
+    this.store.updateState({
+      ESIDToken: token,
     });
   }
 
