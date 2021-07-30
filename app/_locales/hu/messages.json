@@ -143,9 +143,6 @@
   "browserNotSupported": {
     "message": "Az ön böngészője nem támogatott..."
   },
-  "builtInCalifornia": {
-    "message": "A MetaMaskot Kaliforniában tervezték és hozták létre."
-  },
   "buyWithWyre": {
     "message": "Vásároljon ETH-t a Wyre-rel"
   },
@@ -308,9 +305,6 @@
   "done": {
     "message": "Kész"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "Nincs hardveres tárcája? "
-  },
   "downloadGoogleChrome": {
     "message": "Google Chrome letöltése"
   },
@@ -439,9 +433,6 @@
     "message": "Szerezzen Ethert pénzcsapból a(z) $1-ért",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "Segítség kérése"
-  },
   "getStarted": {
     "message": "Első lépések"
   },
@@ -462,9 +453,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "Válassza ki a MetaMask-kal használni kívánt hardveres pénztárcát"
-  },
-  "havingTroubleConnecting": {
-    "message": "Gond van a csatlakozással?"
   },
   "here": {
     "message": "itt",
@@ -495,21 +483,12 @@
   "importAccountSeedPhrase": {
     "message": "Fiók importálása seed mondat segítségével"
   },
-  "importUsingSeed": {
-    "message": "Importálás a fiók seed mondatának használatával"
-  },
   "importWallet": {
     "message": "Pénztárca importálása"
-  },
-  "importYourExisting": {
-    "message": "Importálja meglévő pénztárcáját a 12 szóból álló seed mondat segítségével"
   },
   "imported": {
     "message": "Importált",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Információk és súgó"
   },
   "initialTransactionConfirmed": {
     "message": "Eredeti tranzakciódat jóváhagyta a hálózat. A visszatéréshez kattints az OK-ra."
@@ -608,12 +587,6 @@
   "myAccounts": {
     "message": "Fiókjaim"
   },
-  "myWalletAccounts": {
-    "message": "Saját tárca fiókjai"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Az összes MetaMask által létrehozott fiókot automatikusan hozzáadja a munkamenethez."
-  },
   "needEtherInWallet": {
     "message": "Ha a MetaMaskon keresztül szeretne interakcióba lépni decentralizált alkalmazással, ahhoz a tárcájában Ethernek kell lennie."
   },
@@ -709,9 +682,6 @@
   "optionalCurrencySymbol": {
     "message": "Szimbólum (opcionális)"
   },
-  "orderOneHere": {
-    "message": "Rendeljen trezort vagy főkönyvet, és tárolja pénzeszközeit hideg tárcában"
-  },
   "origin": {
     "message": "Eredet"
   },
@@ -771,14 +741,8 @@
   "readdToken": {
     "message": "Ezt a tokent a jövőben is hozzáadhatja, ha a fiókbeállítások menü „Token hozzáadása” elemére lép."
   },
-  "readyToConnect": {
-    "message": "Készen áll a csatlakozásra?"
-  },
   "recents": {
     "message": "Legutóbbiak"
-  },
-  "recipientAddress": {
-    "message": "Címzett címe"
   },
   "recipientAddressPlaceholder": {
     "message": "Keresés, nyilvános cím (0x) vagy ENS"
@@ -830,9 +794,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "Fiók helyreállítása a seed mondat segítségével"
-  },
-  "restoreFromSeed": {
-    "message": "Visszaállítja a fiókot? "
   },
   "revealSeedWords": {
     "message": "Seed szavak megjelenítése"
@@ -887,9 +848,6 @@
   },
   "secretBackupPhraseWarning": {
     "message": "FIGYELEM: Senkise se adja meg a biztonsági szakaszát. Ennek tulajdonosa örökre elviheti Ether-jeit."
-  },
-  "secretPhrase": {
-    "message": "Tárolód helyreállításához írd be titkos tizenkét szavas szókapcsolatodat ide."
   },
   "securityAndPrivacy": {
     "message": "Biztonság és adatvédelem"
@@ -1001,24 +959,6 @@
   },
   "stateLogsDescription": {
     "message": "Az állapotnaplóban megtalálhatók nyilvános fiókcímeid és elküldött tranzakcióid."
-  },
-  "step1HardwareWallet": {
-    "message": "1. Csatlakoztassa a hardveres pénztárcát"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "Csatlakoztassa hardveres tárcáját közvetlenül a számítógéphez."
-  },
-  "step2HardwareWallet": {
-    "message": "2. Válassz egy fiókot"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "Válassza ki a megtekinteni kívánt fiókot. Egyszerre csak egyet választhat."
-  },
-  "step3HardwareWallet": {
-    "message": "3. Kezdje el használni a dApps-t és másokat!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "Használja hardveres fiókját úgy, mint bármilyen Ethereum fiókot. Jelentkezzen be a dAppsba, küldjön Ethet, vásároljon és tároljon ERC20 tokeneket és nem helyettesíthető tokeneket, például CryptoKitties-t."
   },
   "storePhrase": {
     "message": "Tárolja a mondatot jelszókezelőben, például az 1Passwordben."

@@ -46,9 +46,6 @@
   "blockiesIdenticon": {
     "message": "Blockies Identicon kullan"
   },
-  "builtInCalifornia": {
-    "message": "MetaMask California'da tasarlandı ve yaratıldı"
-  },
   "cancel": {
     "message": "Vazgeç"
   },
@@ -196,9 +193,6 @@
     "message": "Alındı",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "infoHelp": {
-    "message": "Bilgi ve yardım"
-  },
   "insufficientFunds": {
     "message": "Yetersiz kaynak."
   },
@@ -327,9 +321,6 @@
   "readdToken": {
     "message": "Gelecekte Bu jetonu hesap seçenekleri menüsünde “Jeton ekle”'ye giderek geri ekleyebilirsiniz."
   },
-  "recipientAddress": {
-    "message": "Alıcı adresi"
-  },
   "reject": {
     "message": "Reddetmek"
   },
@@ -341,9 +332,6 @@
   },
   "resetAccount": {
     "message": "Hesabı sıfıla"
-  },
-  "restoreFromSeed": {
-    "message": "Kaynak ifadeden geri getir. Restore from seed phrase"
   },
   "revealSeedWords": {
     "message": "Kaynak kelimelerini göster"
@@ -365,9 +353,6 @@
   },
   "searchTokens": {
     "message": "Jeton ara"
-  },
-  "secretPhrase": {
-    "message": "Kasanızı geri getirmek için gizli 12 kelimelik ifadenizi giriniz."
   },
   "seedPhraseReq": {
     "message": "Kaynak ifadeleri 12 kelimedir."

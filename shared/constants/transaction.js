@@ -1,3 +1,5 @@
+import { MESSAGE_TYPE } from './app';
+
 /**
  * Transaction Type is a MetaMask construct used internally
  * @typedef {Object} TransactionTypes
@@ -51,6 +53,38 @@ export const TRANSACTION_TYPES = {
   DEPLOY_CONTRACT: 'contractDeployment',
   SWAP: 'swap',
   SWAP_APPROVAL: 'swapApproval',
+  SIGN: MESSAGE_TYPE.ETH_SIGN,
+  SIGN_TYPED_DATA: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA,
+  PERSONAL_SIGN: MESSAGE_TYPE.PERSONAL_SIGN,
+  ETH_DECRYPT: MESSAGE_TYPE.ETH_DECRYPT,
+  ETH_GET_ENCRYPTION_PUBLIC_KEY: MESSAGE_TYPE.ETH_GET_ENCRYPTION_PUBLIC_KEY,
+};
+
+/**
+ * In EIP-2718 typed transaction envelopes were specified, with the very first
+ * typed envelope being 'legacy' and describing the shape of the base
+ * transaction params that were hitherto the only transaction type sent on
+ * Ethereum.
+ * @typedef {Object} TransactionEnvelopeTypes
+ * @property {'0x0'} LEGACY - A legacy transaction, the very first type.
+ * @property {'0x1'} ACCESS_LIST - EIP-2930 defined the access list transaction
+ *  type that allowed for specifying the state that a transaction would act
+ *  upon in advance and theoretically save on gas fees.
+ * @property {'0x2'} FEE_MARKET - The type introduced comes from EIP-1559,
+ *  Fee Market describes the addition of a baseFee to blocks that will be
+ *  burned instead of distributed to miners. Transactions of this type have
+ *  both a maxFeePerGas (maximum total amount in gwei per gas to spend on the
+ *  transaction) which is inclusive of the maxPriorityFeePerGas (maximum amount
+ *  of gwei per gas from the transaction fee to distribute to miner).
+ */
+
+/**
+ * @type {TransactionEnvelopeTypes}
+ */
+export const TRANSACTION_ENVELOPE_TYPES = {
+  LEGACY: '0x0',
+  ACCESS_LIST: '0x1',
+  FEE_MARKET: '0x2',
 };
 
 /**
@@ -155,6 +189,14 @@ export const TRANSACTION_GROUP_CATEGORIES = {
  * @property {string} gas - The max amount of gwei, in hexadecimal, the user is willing to pay
  * @property {string} [data] - Hexadecimal encoded string representing calls to the EVM's ABI
  */
+
+/**
+ * @typedef {Object} TxError
+ * @property {string} message - The message from the encountered error.
+ * @property {any} rpc - The "value" of the error.
+ * @property {string} [stack] - the stack trace from the error, if available.
+ */
+
 /**
  * An object representing a transaction, in whatever state it is in.
  * @typedef {Object} TransactionMeta
@@ -183,6 +225,7 @@ export const TRANSACTION_GROUP_CATEGORIES = {
  *  ready to submit to the network.
  * @property {string} hash - A hex string of the transaction hash, used to
  *  identify the transaction on the network.
- * @property {number} submittedTime - The time the transaction was submitted to
+ * @property {number} [submittedTime] - The time the transaction was submitted to
  *  the network, in Unix epoch time (ms).
+ * @property {TxError} [err] - The error encountered during the transaction
  */

@@ -35,14 +35,13 @@ const copyTargets = [
     dest: `fonts/fontawesome`,
   },
   {
-    src: `./ui/app/css/output/`,
+    src: `./ui/css/output/`,
     pattern: `*.css`,
     dest: ``,
   },
   {
-    src: `./app/`,
-    pattern: `*.html`,
-    dest: ``,
+    src: `./app/loading.html`,
+    dest: `loading.html`,
   },
   {
     src: `./node_modules/globalthis/dist/browser.js`,
@@ -50,12 +49,16 @@ const copyTargets = [
   },
   {
     src: `./node_modules/ses/dist/lockdown.cjs`,
-    dest: `lockdown.js`,
+    dest: `lockdown-install.js`,
   },
   {
-    src: `./app/scripts/`,
-    pattern: `runLockdown.js`,
-    dest: ``,
+    src: `./app/scripts/lockdown-run.js`,
+    dest: `lockdown-run.js`,
+  },
+  {
+    // eslint-disable-next-line node/no-extraneous-require
+    src: require.resolve('@lavamoat/lavapack/src/runtime-cjs.js'),
+    dest: `runtime-cjs.js`,
   },
 ];
 
@@ -76,9 +79,27 @@ for (const tag of languageTags) {
 const copyTargetsDev = [
   ...copyTargets,
   {
-    src: './app/scripts/',
+    src: './development',
     pattern: '/chromereload.js',
     dest: ``,
+  },
+  // empty files to suppress missing file errors
+  {
+    src: './development/empty.js',
+    dest: `bg-libs.js`,
+  },
+  {
+    src: './development/empty.js',
+    dest: `ui-libs.js`,
+  },
+];
+
+const copyTargetsProd = [
+  ...copyTargets,
+  // empty files to suppress missing file errors
+  {
+    src: './development/empty.js',
+    dest: `chromereload.js`,
   },
 ];
 
@@ -86,7 +107,7 @@ function createStaticAssetTasks({ livereload, browserPlatforms }) {
   const prod = createTask(
     'static:prod',
     composeSeries(
-      ...copyTargets.map((target) => {
+      ...copyTargetsProd.map((target) => {
         return async function copyStaticAssets() {
           await performCopy(target);
         };

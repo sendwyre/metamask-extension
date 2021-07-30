@@ -43,9 +43,6 @@
   "blockiesIdenticon": {
     "message": "Usar Blockies Identicon"
   },
-  "builtInCalifornia": {
-    "message": "MetaMask é desenhada e construída na California."
-  },
   "cancel": {
     "message": "Cancelar"
   },
@@ -172,9 +169,6 @@
     "message": "Importado",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "infoHelp": {
-    "message": "Informação & Ajuda"
-  },
   "insufficientFunds": {
     "message": "Fundos insuficientes."
   },
@@ -285,9 +279,6 @@
   "readdToken": {
     "message": "Pode adicionar este token de novo clicando na opção “Adicionar token” no menu de opções da sua conta."
   },
-  "recipientAddress": {
-    "message": "Endereço do Destinatário"
-  },
   "reject": {
     "message": "Rejeitar"
   },
@@ -299,9 +290,6 @@
   },
   "resetAccount": {
     "message": "Reinicializar Conta"
-  },
-  "restoreFromSeed": {
-    "message": "Restaurar a partir da frase seed"
   },
   "revealSeedWords": {
     "message": "Revelar Palavras Seed"
@@ -320,9 +308,6 @@
   },
   "search": {
     "message": "Procurar"
-  },
-  "secretPhrase": {
-    "message": "Introduza a sua frase secreta de 12 palavras para recuperar o seu ."
   },
   "seedPhraseReq": {
     "message": "seed phrases are 12 words long"

@@ -1,4 +1,4 @@
-import assert from 'assert';
+import { strict as assert } from 'assert';
 import sinon from 'sinon';
 
 import { ethers } from 'ethers';
@@ -12,6 +12,7 @@ import {
 } from '../../../shared/constants/network';
 import { ETH_SWAPS_TOKEN_OBJECT } from '../../../shared/constants/swaps';
 import { createTestProviderTools } from '../../../test/stub/provider';
+import { SECOND } from '../../../shared/constants/time';
 import SwapsController, { utils } from './swaps';
 import { NETWORK_EVENTS } from './network';
 
@@ -33,6 +34,8 @@ const TEST_AGG_ID_5 = 'TEST_AGG_5';
 const TEST_AGG_ID_6 = 'TEST_AGG_6';
 const TEST_AGG_ID_BEST = 'TEST_AGG_BEST';
 const TEST_AGG_ID_APPROVAL = 'TEST_AGG_APPROVAL';
+
+const POLLING_TIMEOUT = SECOND * 1000;
 
 const MOCK_APPROVAL_NEEDED = {
   data:
@@ -124,14 +127,14 @@ const EMPTY_INIT_STATE = {
     errorKey: '',
     topAggId: null,
     routeState: '',
-    swapsFeatureIsLive: false,
+    swapsFeatureIsLive: true,
+    useNewSwapsApi: false,
     swapsQuoteRefreshTime: 60000,
   },
 };
 
 const sandbox = sinon.createSandbox();
 const fetchTradesInfoStub = sandbox.stub();
-const fetchSwapsFeatureLivenessStub = sandbox.stub();
 const fetchSwapsQuoteRefreshTimeStub = sandbox.stub();
 const getCurrentChainIdStub = sandbox.stub();
 getCurrentChainIdStub.returns(MAINNET_CHAIN_ID);
@@ -147,7 +150,6 @@ describe('SwapsController', function () {
       getProviderConfig: MOCK_GET_PROVIDER_CONFIG,
       tokenRatesStore: MOCK_TOKEN_RATES_STORE,
       fetchTradesInfo: fetchTradesInfoStub,
-      fetchSwapsFeatureLiveness: fetchSwapsFeatureLivenessStub,
       fetchSwapsQuoteRefreshTime: fetchSwapsQuoteRefreshTimeStub,
       getCurrentChainId: getCurrentChainIdStub,
     });
@@ -198,7 +200,6 @@ describe('SwapsController', function () {
         getProviderConfig: MOCK_GET_PROVIDER_CONFIG,
         tokenRatesStore: MOCK_TOKEN_RATES_STORE,
         fetchTradesInfo: fetchTradesInfoStub,
-        fetchSwapsFeatureLiveness: fetchSwapsFeatureLivenessStub,
         getCurrentChainId: getCurrentChainIdStub,
       });
       const currentEthersInstance = swapsController.ethersProvider;
@@ -223,7 +224,6 @@ describe('SwapsController', function () {
         getProviderConfig: MOCK_GET_PROVIDER_CONFIG,
         tokenRatesStore: MOCK_TOKEN_RATES_STORE,
         fetchTradesInfo: fetchTradesInfoStub,
-        fetchSwapsFeatureLiveness: fetchSwapsFeatureLivenessStub,
         getCurrentChainId: getCurrentChainIdStub,
       });
       const currentEthersInstance = swapsController.ethersProvider;
@@ -248,7 +248,6 @@ describe('SwapsController', function () {
         getProviderConfig: MOCK_GET_PROVIDER_CONFIG,
         tokenRatesStore: MOCK_TOKEN_RATES_STORE,
         fetchTradesInfo: fetchTradesInfoStub,
-        fetchSwapsFeatureLiveness: fetchSwapsFeatureLivenessStub,
         getCurrentChainId: getCurrentChainIdStub,
       });
       const currentEthersInstance = swapsController.ethersProvider;
@@ -645,7 +644,7 @@ describe('SwapsController', function () {
           topAggId,
           resultQuotes,
         ] = await swapsController._findTopQuoteAndCalculateSavings(testInput);
-        assert.equal(topAggId, [TEST_AGG_ID_2]);
+        assert.equal(topAggId, TEST_AGG_ID_2);
         assert.deepStrictEqual(resultQuotes, expectedResultQuotes);
       });
     });
@@ -655,6 +654,7 @@ describe('SwapsController', function () {
         const quotes = await swapsController.fetchAndSetQuotes(undefined);
         assert.strictEqual(quotes, null);
       });
+
       it('calls fetchTradesInfo with the given fetchParams and returns the correct quotes', async function () {
         fetchTradesInfoStub.resolves(getMockQuotes());
         fetchSwapsQuoteRefreshTimeStub.resolves(getMockQuoteRefreshTime());
@@ -692,15 +692,15 @@ describe('SwapsController', function () {
           metaMaskFeeInEth: '0.5050505050505050505',
           ethValueOfTokens: '50',
         });
-
         assert.strictEqual(
-          fetchTradesInfoStub.calledOnceWithExactly(
-            MOCK_FETCH_PARAMS,
-            MOCK_FETCH_METADATA,
-          ),
+          fetchTradesInfoStub.calledOnceWithExactly(MOCK_FETCH_PARAMS, {
+            ...MOCK_FETCH_METADATA,
+            useNewSwapsApi: false,
+          }),
           true,
         );
       });
+
       it('performs the allowance check', async function () {
         fetchTradesInfoStub.resolves(getMockQuotes());
         fetchSwapsQuoteRefreshTimeStub.resolves(getMockQuoteRefreshTime());
@@ -719,6 +719,7 @@ describe('SwapsController', function () {
           allowanceStub.calledOnceWithExactly(
             MOCK_FETCH_PARAMS.sourceToken,
             MOCK_FETCH_PARAMS.fromAddress,
+            MAINNET_CHAIN_ID,
           ),
           true,
         );
@@ -835,7 +836,7 @@ describe('SwapsController', function () {
       it('clears polling timeout', function () {
         swapsController.pollingTimeout = setTimeout(
           () => assert.fail(),
-          1000000,
+          POLLING_TIMEOUT,
         );
         swapsController.resetSwapsState();
         assert.strictEqual(swapsController.pollingTimeout._idleTimeout, -1);
@@ -846,7 +847,7 @@ describe('SwapsController', function () {
       it('clears polling timeout', function () {
         swapsController.pollingTimeout = setTimeout(
           () => assert.fail(),
-          1000000,
+          POLLING_TIMEOUT,
         );
         swapsController.stopPollingForQuotes();
         assert.strictEqual(swapsController.pollingTimeout._idleTimeout, -1);
@@ -864,7 +865,7 @@ describe('SwapsController', function () {
       it('clears polling timeout', function () {
         swapsController.pollingTimeout = setTimeout(
           () => assert.fail(),
-          1000000,
+          POLLING_TIMEOUT,
         );
         swapsController.resetPostFetchState();
         assert.strictEqual(swapsController.pollingTimeout._idleTimeout, -1);
@@ -874,12 +875,14 @@ describe('SwapsController', function () {
         const tokens = 'test';
         const fetchParams = 'test';
         const swapsFeatureIsLive = false;
+        const useNewSwapsApi = false;
         const swapsQuoteRefreshTime = 0;
         swapsController.store.updateState({
           swapsState: {
             tokens,
             fetchParams,
             swapsFeatureIsLive,
+            useNewSwapsApi,
             swapsQuoteRefreshTime,
           },
         });
@@ -894,281 +897,6 @@ describe('SwapsController', function () {
           swapsFeatureIsLive,
           swapsQuoteRefreshTime,
         });
-      });
-    });
-
-    describe('_setupSwapsLivenessFetching ', function () {
-      let clock;
-      const EXPECTED_TIME = 600000;
-
-      const getLivenessState = () => {
-        return swapsController.store.getState().swapsState.swapsFeatureIsLive;
-      };
-
-      // We have to do this to overwrite window.navigator.onLine
-      const stubWindow = () => {
-        sandbox.replace(global, 'window', {
-          addEventListener: window.addEventListener,
-          navigator: { onLine: true },
-          dispatchEvent: window.dispatchEvent,
-          Event: window.Event,
-        });
-      };
-
-      beforeEach(function () {
-        stubWindow();
-        clock = sandbox.useFakeTimers();
-        sandbox.spy(clock, 'setInterval');
-
-        sandbox
-          .stub(SwapsController.prototype, '_fetchAndSetSwapsLiveness')
-          .resolves(undefined);
-
-        sandbox.spy(SwapsController.prototype, '_setupSwapsLivenessFetching');
-
-        sandbox.spy(window, 'addEventListener');
-      });
-
-      afterEach(function () {
-        sandbox.restore();
-      });
-
-      it('calls _setupSwapsLivenessFetching in constructor', function () {
-        swapsController = getSwapsController();
-
-        assert.ok(
-          swapsController._setupSwapsLivenessFetching.calledOnce,
-          'should have called _setupSwapsLivenessFetching once',
-        );
-        assert.ok(window.addEventListener.calledWith('online'));
-        assert.ok(window.addEventListener.calledWith('offline'));
-        assert.ok(
-          clock.setInterval.calledOnceWithExactly(
-            sinon.match.func,
-            EXPECTED_TIME,
-          ),
-          'should have set an interval',
-        );
-      });
-
-      it('handles browser being offline on boot, then coming online', async function () {
-        window.navigator.onLine = false;
-
-        swapsController = getSwapsController();
-        assert.ok(
-          swapsController._setupSwapsLivenessFetching.calledOnce,
-          'should have called _setupSwapsLivenessFetching once',
-        );
-        assert.ok(
-          swapsController._fetchAndSetSwapsLiveness.notCalled,
-          'should not have called _fetchAndSetSwapsLiveness',
-        );
-        assert.ok(
-          clock.setInterval.notCalled,
-          'should not have set an interval',
-        );
-        assert.strictEqual(
-          getLivenessState(),
-          false,
-          'swaps feature should be disabled',
-        );
-
-        const fetchPromise = new Promise((resolve) => {
-          const originalFunction = swapsController._fetchAndSetSwapsLiveness;
-          swapsController._fetchAndSetSwapsLiveness = () => {
-            originalFunction();
-            resolve();
-            swapsController._fetchAndSetSwapsLiveness = originalFunction;
-          };
-        });
-
-        // browser comes online
-        window.navigator.onLine = true;
-        window.dispatchEvent(new window.Event('online'));
-        await fetchPromise;
-
-        assert.ok(
-          swapsController._fetchAndSetSwapsLiveness.calledOnce,
-          'should have called _fetchAndSetSwapsLiveness once',
-        );
-        assert.ok(
-          clock.setInterval.calledOnceWithExactly(
-            sinon.match.func,
-            EXPECTED_TIME,
-          ),
-          'should have set an interval',
-        );
-      });
-
-      it('clears interval if browser goes offline', async function () {
-        swapsController = getSwapsController();
-
-        // set feature to live
-        const { swapsState } = swapsController.store.getState();
-        swapsController.store.updateState({
-          swapsState: { ...swapsState, swapsFeatureIsLive: true },
-        });
-
-        sandbox.spy(swapsController.store, 'updateState');
-
-        assert.ok(
-          clock.setInterval.calledOnceWithExactly(
-            sinon.match.func,
-            EXPECTED_TIME,
-          ),
-          'should have set an interval',
-        );
-
-        const clearIntervalPromise = new Promise((resolve) => {
-          const originalFunction = clock.clearInterval;
-          clock.clearInterval = (intervalId) => {
-            originalFunction(intervalId);
-            clock.clearInterval = originalFunction;
-            resolve();
-          };
-        });
-
-        // browser goes offline
-        window.navigator.onLine = false;
-        window.dispatchEvent(new window.Event('offline'));
-
-        // if this resolves, clearInterval was called
-        await clearIntervalPromise;
-
-        assert.ok(
-          swapsController._fetchAndSetSwapsLiveness.calledOnce,
-          'should have called _fetchAndSetSwapsLiveness once',
-        );
-        assert.ok(
-          swapsController.store.updateState.calledOnce,
-          'should have called updateState once',
-        );
-        assert.strictEqual(
-          getLivenessState(),
-          false,
-          'swaps feature should be disabled',
-        );
-      });
-    });
-
-    describe('_fetchAndSetSwapsLiveness', function () {
-      const getLivenessState = () => {
-        return swapsController.store.getState().swapsState.swapsFeatureIsLive;
-      };
-
-      beforeEach(function () {
-        fetchSwapsFeatureLivenessStub.reset();
-        sandbox.stub(SwapsController.prototype, '_setupSwapsLivenessFetching');
-        swapsController = getSwapsController();
-      });
-
-      afterEach(function () {
-        sandbox.restore();
-      });
-
-      it('fetches feature liveness as expected when API is live', async function () {
-        fetchSwapsFeatureLivenessStub.resolves(true);
-
-        assert.strictEqual(
-          getLivenessState(),
-          false,
-          'liveness should be false on boot',
-        );
-
-        await swapsController._fetchAndSetSwapsLiveness();
-
-        assert.ok(
-          fetchSwapsFeatureLivenessStub.calledOnce,
-          'should have called fetch function once',
-        );
-        assert.strictEqual(
-          getLivenessState(),
-          true,
-          'liveness should be true after call',
-        );
-      });
-
-      it('does not update state if fetched value is same as state value', async function () {
-        fetchSwapsFeatureLivenessStub.resolves(false);
-        sandbox.spy(swapsController.store, 'updateState');
-
-        assert.strictEqual(
-          getLivenessState(),
-          false,
-          'liveness should be false on boot',
-        );
-
-        await swapsController._fetchAndSetSwapsLiveness();
-
-        assert.ok(
-          fetchSwapsFeatureLivenessStub.calledOnce,
-          'should have called fetch function once',
-        );
-        assert.ok(
-          swapsController.store.updateState.notCalled,
-          'should not have called store.updateState',
-        );
-        assert.strictEqual(
-          getLivenessState(),
-          false,
-          'liveness should remain false after call',
-        );
-      });
-
-      it('tries three times before giving up if fetching fails', async function () {
-        const clock = sandbox.useFakeTimers();
-        fetchSwapsFeatureLivenessStub.rejects(new Error('foo'));
-        sandbox.spy(swapsController.store, 'updateState');
-
-        assert.strictEqual(
-          getLivenessState(),
-          false,
-          'liveness should be false on boot',
-        );
-
-        swapsController._fetchAndSetSwapsLiveness();
-        await clock.runAllAsync();
-
-        assert.ok(
-          fetchSwapsFeatureLivenessStub.calledThrice,
-          'should have called fetch function three times',
-        );
-        assert.ok(
-          swapsController.store.updateState.notCalled,
-          'should not have called store.updateState',
-        );
-        assert.strictEqual(
-          getLivenessState(),
-          false,
-          'liveness should remain false after call',
-        );
-      });
-
-      it('sets state after fetching on successful retry', async function () {
-        const clock = sandbox.useFakeTimers();
-        fetchSwapsFeatureLivenessStub.onCall(0).rejects(new Error('foo'));
-        fetchSwapsFeatureLivenessStub.onCall(1).rejects(new Error('foo'));
-        fetchSwapsFeatureLivenessStub.onCall(2).resolves(true);
-
-        assert.strictEqual(
-          getLivenessState(),
-          false,
-          'liveness should be false on boot',
-        );
-
-        swapsController._fetchAndSetSwapsLiveness();
-        await clock.runAllAsync();
-
-        assert.strictEqual(
-          fetchSwapsFeatureLivenessStub.callCount,
-          3,
-          'should have called fetch function three times',
-        );
-        assert.strictEqual(
-          getLivenessState(),
-          true,
-          'liveness should be true after call',
-        );
       });
     });
   });

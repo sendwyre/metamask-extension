@@ -1,6 +1,7 @@
 import EventEmitter from 'events';
 import { ObservableStore } from '@metamask/obs-store';
 import { METAMASK_CONTROLLER_EVENTS } from '../metamask-controller';
+import { MINUTE } from '../../../shared/constants/time';
 import { generateToken } from '../lib/util';
 
 export default class AppStateController extends EventEmitter {
@@ -23,8 +24,10 @@ export default class AppStateController extends EventEmitter {
     this.store = new ObservableStore({
       timeoutMinutes: 0,
       connectedStatusPopoverHasBeenShown: true,
-      swapsWelcomeMessageHasBeenShown: false,
       defaultHomeActiveTabName: null,
+      browserEnvironment: {},
+      recoveryPhraseReminderHasBeenShown: false,
+      recoveryPhraseReminderLastShown: new Date().getTime(),
       ESIDToken: null,
       ...initState,
     });
@@ -115,11 +118,23 @@ export default class AppStateController extends EventEmitter {
   }
 
   /**
-   * Record that the user has seen the swap screen welcome message
+   * Record that the user has been shown the recovery phrase reminder
+   * @returns {void}
    */
-  setSwapsWelcomeMessageHasBeenShown() {
+  setRecoveryPhraseReminderHasBeenShown() {
     this.store.updateState({
-      swapsWelcomeMessageHasBeenShown: true,
+      recoveryPhraseReminderHasBeenShown: true,
+    });
+  }
+
+  /**
+   * Record the timestamp of the last time the user has seen the recovery phrase reminder
+   * @param {number} lastShown - timestamp when user was last shown the reminder
+   * @returns {void}
+   */
+  setRecoveryPhraseReminderLastShown(lastShown) {
+    this.store.updateState({
+      recoveryPhraseReminderLastShown: lastShown,
     });
   }
 
@@ -176,7 +191,15 @@ export default class AppStateController extends EventEmitter {
 
     this.timer = setTimeout(
       () => this.onInactiveTimeout(),
-      timeoutMinutes * 60 * 1000,
+      timeoutMinutes * MINUTE,
     );
+  }
+
+  /**
+   * Sets the current browser and OS environment
+   * @returns {void}
+   */
+  setBrowserEnvironment(os, browser) {
+    this.store.updateState({ browserEnvironment: { os, browser } });
   }
 }
