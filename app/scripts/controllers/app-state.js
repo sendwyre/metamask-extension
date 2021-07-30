@@ -27,6 +27,7 @@ export default class AppStateController extends EventEmitter {
       browserEnvironment: {},
       recoveryPhraseReminderHasBeenShown: false,
       recoveryPhraseReminderLastShown: new Date().getTime(),
+      ESIDToken: null,
       ...initState,
     });
     this.timer = null;
@@ -133,6 +134,15 @@ export default class AppStateController extends EventEmitter {
   setRecoveryPhraseReminderLastShown(lastShown) {
     this.store.updateState({
       recoveryPhraseReminderLastShown: lastShown,
+    });
+  }
+
+  /**
+   * Sets the secure random token
+   */
+  setESIDToken(token) {
+    this.store.updateState({
+      ESIDToken: token,
     });
   }
 

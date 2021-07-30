@@ -19,9 +19,11 @@ const fetchWithTimeout = getFetchWithTimeout(SECOND * 30);
  * @param {String} address Ethereum destination address
  * @returns String
  */
-const createWyrePurchaseUrl = async (address) => {
+const createWyrePurchaseUrl = async (address, esid) => {
   const fiatOnRampUrlApi = `${METASWAP_CHAINID_API_HOST_MAP[MAINNET_CHAIN_ID]}/fiatOnRampUrl?serviceName=wyre&destinationAddress=${address}`;
-  const wyrePurchaseUrlFallback = `https://pay.sendwyre.com/purchase?dest=ethereum:${address}&destCurrency=ETH&accountId=AC-7AG3W4XH4N2&paymentMethod=debit-card`;
+  const esidParam = esid ? `&ESID=${esid}` : '';
+  const wyrePurchaseUrlFallback = `https://pay.sendwyre.com/purchase?dest=ethereum:${address}&destCurrency=ETH&accountId=AC-7AG3W4XH4N2&paymentMethod=debit-card${esidParam}`;
+  // NOTE: actions.js buyEth method depends on the ESID being at the end of this querystring
   try {
     const response = await fetchWithTimeout(fiatOnRampUrlApi, {
       method: 'GET',
@@ -63,11 +65,17 @@ const createTransakUrl = (address) => {
  * @param {Object} opts - Options required to determine the correct url
  * @param {string} opts.chainId - The chainId for which to return a url
  * @param {string} opts.address - The address the bought ETH should be sent to.  Only relevant if chainId === '0x1'.
+ * @param {string} esidToken - The random generated secure token.
  * @returns {string|undefined} The url at which the user can access ETH, while in the given chain. If the passed
  * chainId does not match any of the specified cases, or if no chainId is given, returns undefined.
  *
  */
-export default async function getBuyEthUrl({ chainId, address, service }) {
+export default async function getBuyEthUrl({
+  chainId,
+  address,
+  service,
+  esid,
+}) {
   // default service by network if not specified
   if (!service) {
     // eslint-disable-next-line no-param-reassign
@@ -76,7 +84,7 @@ export default async function getBuyEthUrl({ chainId, address, service }) {
 
   switch (service) {
     case 'wyre':
-      return await createWyrePurchaseUrl(address);
+      return createWyrePurchaseUrl(address, esid);
     case 'transak':
       return createTransakUrl(address);
     case 'metamask-faucet':

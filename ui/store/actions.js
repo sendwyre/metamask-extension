@@ -3,6 +3,7 @@ import log from 'loglevel';
 import { captureException } from '@sentry/browser';
 import { capitalize, isEqual } from 'lodash';
 import getBuyEthUrl from '../../app/scripts/lib/buy-eth-url';
+import { createToken } from '../helpers/utils/util';
 import {
   fetchLocale,
   loadRelativeTimeFormatLocaleData,
@@ -1840,6 +1841,8 @@ export function showSendTokenPage() {
 
 export function buyEth(opts) {
   return async (dispatch) => {
+    opts.esid = createToken();
+    promisifiedBackground.setESIDToken(opts.esid);
     const url = await getBuyEthUrl(opts);
     global.platform.openTab({ url });
     dispatch({

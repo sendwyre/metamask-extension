@@ -513,6 +513,10 @@ export function getIsSwapsChain(state) {
   return ALLOWED_SWAPS_CHAIN_IDS[chainId];
 }
 
+export function getESIDToken(state) {
+  return state.metamask.ESIDToken;
+}
+
 export function getNativeCurrencyImage(state) {
   const nativeCurrency = getNativeCurrency(state).toUpperCase();
   return NATIVE_CURRENCY_TOKEN_IMAGE_MAP[nativeCurrency];

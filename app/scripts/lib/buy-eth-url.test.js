@@ -50,6 +50,15 @@ describe('buy-eth-url', function () {
     );
   });
 
+  it('returns a fallback Wyre url with ESID if /orders/reserve API call fails', async function () {
+    const wyreUrl = await getBuyEthUrl({ ...MAINNET, esid: '123' });
+
+    assert.equal(
+      wyreUrl,
+      `https://pay.sendwyre.com/purchase?dest=ethereum:${ETH_ADDRESS}&destCurrency=ETH&accountId=${WYRE_ACCOUNT_ID}&paymentMethod=debit-card&ESID=123`,
+    );
+  });
+
   it('returns Transak url with an ETH address for Ethereum mainnet', async function () {
     const transakUrl = await getBuyEthUrl({ ...MAINNET, service: 'transak' });
 
