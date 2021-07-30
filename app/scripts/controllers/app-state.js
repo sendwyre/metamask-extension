@@ -2,7 +2,6 @@ import EventEmitter from 'events';
 import { ObservableStore } from '@metamask/obs-store';
 import { METAMASK_CONTROLLER_EVENTS } from '../metamask-controller';
 import { MINUTE } from '../../../shared/constants/time';
-import { generateToken } from '../lib/util';
 
 export default class AppStateController extends EventEmitter {
   /**

@@ -3,8 +3,7 @@ import log from 'loglevel';
 import { captureException } from '@sentry/browser';
 import { capitalize, isEqual } from 'lodash';
 import getBuyEthUrl from '../../app/scripts/lib/buy-eth-url';
-import { checksumAddress, createToken } from '../helpers/utils/util';
-import { calcTokenBalance, estimateGasForSend } from '../pages/send/send.utils';
+import { createToken } from '../helpers/utils/util';
 import {
   fetchLocale,
   loadRelativeTimeFormatLocaleData,

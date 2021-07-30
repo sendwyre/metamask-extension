@@ -1,5 +1,4 @@
 import log from 'loglevel';
-import { createToken } from '../helpers/utils/util';
 
 import { METASWAP_CHAINID_API_HOST_MAP } from '../../../shared/constants/swaps';
 import {
@@ -71,7 +70,12 @@ const createTransakUrl = (address) => {
  * chainId does not match any of the specified cases, or if no chainId is given, returns undefined.
  *
  */
-export default async function getBuyEthUrl({ chainId, address, service, esid }) {
+export default async function getBuyEthUrl({
+  chainId,
+  address,
+  service,
+  esid,
+}) {
   // default service by network if not specified
   if (!service) {
     // eslint-disable-next-line no-param-reassign
