@@ -91,7 +91,7 @@
     "ws": "^7.4.6"
   },
   "dependencies": {
-    "3box": "^1.10.2",
+    "3box": "^1.22.2",
     "@babel/runtime": "^7.5.5",
     "@download/blockies": "^1.0.3",
     "@ensdomains/content-hash": "^2.5.6",
